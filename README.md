@@ -11,5 +11,5 @@ Forward rendering consists of 4 main parts, The base geometry of a shape, the ve
 
 The pipeline for this may look like the following:
 
-![Screenshot2](Forward Rendering.png)
+![Screenshot](Forward-Rendering.png)
 
