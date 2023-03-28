@@ -19,3 +19,8 @@ The pipeline for this may look like the following:
 
 ![Screenshot](DeferredRendering.png)
 
+The reason why you may want to use Deffered Rendering over Forward Rendering may be for a few reasons. The main reason why is that with Forward rendering, since the fragment shader takes in your geometry and vertex information, it can only apply lighting on a per vertex basis, which can result in very intensive calculations if your object has a lot of vertices. Since deffered rendering splits this process, you end not having to do as many calculations, which results in less intensitivity for your object. 
+
+A Flowchart for both pipelines may look like the following:
+![Screenshot](Flowchart.png)
+
