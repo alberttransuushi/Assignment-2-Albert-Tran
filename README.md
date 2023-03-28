@@ -13,3 +13,8 @@ The pipeline for this may look like the following:
 
 ![Screenshot](ForwardRendering.png)
 
+Deferred Rendering on the other hand uses the same steps as Forward Rendering, going from Vertex to Geometry, and then to Fragment. However it is changed a bit, instead of simplely going through all of the shaders, it instead defers the the shaders until the pipeline has gone through everything. It then also handles the lighting and other shading information by applying it at the end, instead of at the fragment shader. 
+
+The pipeline for this may look like the following:
+
+
