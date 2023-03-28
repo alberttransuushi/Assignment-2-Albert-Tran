@@ -17,4 +17,5 @@ Deferred Rendering on the other hand uses the same steps as Forward Rendering, g
 
 The pipeline for this may look like the following:
 
+![Screenshot](DeferredRendering.png)
 
