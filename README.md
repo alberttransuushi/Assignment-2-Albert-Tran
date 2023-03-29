@@ -231,6 +231,39 @@ Shader "ColoredShadow"
     Fallback "Diffuse"
 }
 ```
+This code is a relatively simple shader, essentially it just colors shadows. 
+
+```
+half4 LightingCSLambert(SurfaceOutput s, half3 lightDir, half atten) {
+
+             fixed diff = max(0, dot(s.Normal, lightDir));
+             half4 c;
+
+             c.rgb = s.Albedo * _LightColor0.rgb * (diff * atten * 0.5);
+
+             //shadow color
+             c.rgb += _ShadowColor.xyz * (1.0 - atten);
+             c.a = s.Alpha;
+             return c;
+
+        }
+```
+What happens here is that we first create our lighting, using `fixed diff` which sets up our light for our shadows. To go slightly into more detail, we take the normal and the light direction, and dot product it to create a simple diffuse light, we then also use the `max` function, which essentially dictates that if we have "negative" lighting, we simply just set our light back to 0 (no light), as it is impossible to have "negative" light. 
+
+We then use this line of code to set up our shadows, using our lighting. 
+
+`c.rgb = s.Albedo * _LightColor0.rgb * (diff * atten * 0.5);`
+
+This takes into account atten or attenuation, which dictates how our shadows will look when being casted to objects. We then set up our shadow color using
+the following line of code. 
+
+`c.rgb += _ShadowColor.xyz * (1.0 - atten);`
+
+Finally we give our shadow a bit of transparency using the following: 
+
+`c.a = s.Alpha;`
+
+
 # Scene Recreation: Outlining and Textured Shading:
 
 In the second part of my recreation of the picture shown in the first part of my recreation, I added Outlining and a unique screen space shader, which looks like the following:
