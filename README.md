@@ -28,6 +28,7 @@ A Flowchart for both pipelines may look like the following:
 # Sqaure Waves with Toon Shading
 
 For my code I have written in this assignment, I was provided a picture of the following scene and began recreation based on the assignment details:
+
 ![Screenshot](SceneBasis.png)
 
 In this part of the assignment we will create sqaure waves and apply toon shading to them:
