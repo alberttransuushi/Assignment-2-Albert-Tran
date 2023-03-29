@@ -301,3 +301,96 @@ Shader "Custom/Shadows"
         }
 }
 ```
+
+For my final code explination, as well as the final part of this assignment, I decided to explain how shadows work within vertex and fragment shaders. Lets go over this piece of code piece by piece
+
+First: 
+```
+               struct appdata {
+                    float4 vertex : POSITION;
+                    float3 normal : NORMAL;
+                    float4 texcoord : TEXCOORD0;
+                };
+
+                struct v2f
+                {
+                    float2 uv : TEXCOORD0;
+                    fixed4 diff : COLOR0;
+                    float4 pos : SV_POSITION;
+                    SHADOW_COORDS(1)
+                };
+
+                v2f vert(appdata v)
+                {
+                    v2f o;
+                    o.pos = UnityObjectToClipPos(v.vertex);
+                    o.uv = v.texcoord;
+                    half3 worldNormal = UnityObjectToWorldNormal(v.normal);
+                    half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
+                    o.diff = nl * _LightColor0;
+                    TRANSFER_SHADOW(o)
+                    return o;
+                }
+                sampler2D _MainTex;
+                fixed4 _Color;
+
+                fixed4 frag(v2f i) : SV_Target
+                {
+                    fixed4 col = tex2D(_MainTex, i.uv);
+                    fixed shadow = SHADOW_ATTENUATION(i);
+                    col.rgb *= i.diff * shadow * _Color;
+                    return col;
+                }
+```
+This piece of code is our first pass, and is what actually defines our shadows. within our first structure "Appdata" we set up the information we need, the most important one here being our `Normal` and `Vertex`, as this is the information we'll use to create our shadows, within the the v2f structure we then also define our shadow coordinates. We then use this in our `v2f vert` functions, this creates shadows based the world normal and the normal of our object, it then takes into account the information of where our light is within the world with the following line of code:
+
+```
+half nl = max(0, dot(worldNormal, _WorldSpaceLightPos0.xyz));
+```
+
+it then creates the basis for our shadow.
+
+Finally in our fragment shader we finish off our shadow by using `SHADOW_ATTENUATION(i)` which takes into account our v2f information, which includes all of our shadow info. We then apply it in the following line of code, and give our shadow some color:
+
+```
+col.rgb *= i.diff * shadow * _Color;
+```
+
+However we aren't done yet. We have created our shadow yes, but we now need actually apply our shadows onto our scene. We do this by "casting" our shadows, essentially applying our shadows onto objects.
+
+This is done through this pass:
+
+```
+ Pass
+            {
+                Tags {"LightMode" = "ShadowCaster"}
+                CGPROGRAM
+                #pragma vertex vert
+                #pragma fragment frag
+                #pragma multi_compile_shadowcaster
+                #include "UnityCG.cginc"
+                struct appdata {
+                    float4 vertex : POSITION;
+                    float3 normal : NORMAL;
+                    float4 texcoord : TEXCOORD0;
+                };
+                struct v2f {
+                    V2F_SHADOW_CASTER;
+                };
+                v2f vert(appdata v)
+                {
+                    v2f o;
+                    TRANSFER_SHADOW_CASTER_NORMALOFFSET(o)
+                    return o;
+                }
+                float4 frag(v2f i) : SV_Target
+                {
+                    SHADOW_CASTER_FRAGMENT(i)
+                }
+                ENDCG
+            }
+        }
+}
+```
+
+What this pass dictates essentially is that we set our lighting mode to be a shadowcaster, and then apply (cast) our shadows with a slight offset, to make the shadows seem more realistic. 
