@@ -3,7 +3,7 @@
 
 ![Screenshot](Base.png)
 
-#Deffered and Forward rendering: What's the difference and implementation
+# Deffered and Forward rendering: What's the difference and implementation
 
 Within the field of Computer Graphics there are typically two different kinds of rendering pipelines we can use Forward Rendering and Deffered Rendering.
 
@@ -25,7 +25,7 @@ A Flowchart for both pipelines may look like the following:
 
 ![Screenshot](Flowchart.png)
 
-#Sqaure Waves with Toon Shading
+# Sqaure Waves with Toon Shading
 
 In this part of the assignment we will create sqaure waves and apply toon shading to them:
 
@@ -50,4 +50,53 @@ This portion of the assignment is able to be viewed in my "Release For Base Scen
 ![Screenshot](BasicWaves.png)
 
 
+# First Code Explination: Progressively Upscaling
+
+`
+void OnRenderImage(RenderTexture source, RenderTexture
+destination){
+  int width = source.width / integerRange;
+  int height = source.height / integerRange;
+  RenderTextureFormat format = source.format;
+  RenderTexture[] textures = new RenderTexture[16];
+
+  RenderTexture currentDestination = textures[0] = RenderTexture.GetTemporary(width, height, 0, format);
+
+  Graphics.Blit(source, currentDestination);
+  RenderTexture currentSource = currentDestination;
+  Graphics.Blit(currentSource, destination);
+  RenderTexture.ReleaseTemporary(currentSource);
+  int i = 1;
+  for (; i < iterations; i++) {
+      width /= 2;
+      height /= 2;
+      currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, format);
+     
+       if (height < 2) {
+          break;
+       }
+      currentDestination = RenderTexture.GetTemporary(width, height, 0, format);
+      Graphics.Blit(currentSource, currentDestination);
+      RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+  }
+
+  for (; i < iterations; i++) {
+      Graphics.Blit(currentSource,
+      currentDestination);
+      // RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+   }
+  for (i -= 2; i >= 0; i--) {
+      currentDestination = textures[i];
+      textures[i] = null;
+      Graphics.Blit(currentSource,
+      currentDestination);
+      RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+  }
+
+  Graphics.Blit(currentSource, destination);
+}
+`
 
