@@ -25,7 +25,7 @@ A Flowchart for both pipelines may look like the following:
 
 ![Screenshot](Flowchart.png)
 
-# Sqaure Waves with Toon Shading
+# Scene Recreation: Sqaure Waves with Toon Shading
 
 For my code I have written in this assignment, I was provided a picture of the following scene and began recreation based on the assignment details:
 
@@ -154,6 +154,56 @@ Shader "ColoredShadow"
     Fallback "Diffuse"
 }
 ```
+# Scene Recreation: Outlining and Textured Shading:
+
+In the second part of my recreation of the picture shown in the first part of my recreation, I added Outlining and a unique screen space shader, which looks like the following:
+
+![image](https://user-images.githubusercontent.com/98855552/228613934-390b5fa7-0f8c-45b5-9fd3-fae9b389982c.png)
+
+First to explain outlining lets look at the code needed for it:
+
+![image](https://user-images.githubusercontent.com/98855552/228614098-03c3e6d4-ac0c-434c-bf60-d0eb4e501df7.png)
+
+Essentially this code creates a vertex extruded copy of our mesh in a pass in our shader program. This copy is based off of the normals of our object. This copy is then colored to be a solid color, which we define with the variable of `_OutlineColor`. We also added an offset to the outline so it properly shows.
+
+Now to explain the lined shading we have on our waves and our grass, it's important to note a few different parts of the shader code. Let's go over the first part: 
+
+![image](https://user-images.githubusercontent.com/98855552/228614794-f6d4ac07-c6e4-407a-b229-d4d1d641a5c2.png)
+
+First and foremost, we'll need to define our own unique Surface Output structure for our surface shader function, this is because this function does not implicitly understand the UV positions of our screen, there is not structure for it, which is why we add it here. Second we use toon ramp lighting and create 3 different "Hatching" textures, these textures then get applied to the final toon shaded result, through:
+
+```
+t.rgb = s.Albedo * _LightColor0.rgb * ((lerp(t.rgb, cLit, v)) * (lerp(cHvy, cMed, v)) * ramp);
+
+```
+This line of code essentially applies the textures of our "Hatching" textures into our shading. These then work with Toon shading so that the lightest hatches will go onto the lightest tones of the toon shade, and they continue as the shading becomes darker and darker within the toon shader. 
+
+With this done we actually have to apply these textures to be rendered in our surface output, which we with the following: 
+
+![image](https://user-images.githubusercontent.com/98855552/228615829-ffd04dbd-9736-40ff-bb20-d0eb7257ad4e.png)
+
+This code just defines the screenUV coordinates and applies our textures onto our object and the textures on our object. 
+
+You can also replace this line of code:
+
+```
+o.screenUV = IN.screenPos.xy * 4 / IN.screenPos.w;
+```
+with the following:
+
+```
+o.screenUV = IN.uv_MainTex * _Repeat;
+```
+This sets the textured shading to be within object space, and not screen space, which will keep the lines static. I chose not to do this as the moving lines would be more akin to water lines in old retro games. 
+
+I Finally added a unique skybox to my project as well, which while simple, helps to encapsulate the mood of the project much better.
+
+The final product looks like the following:
+![Screenshot](BasicWaves.png)
+
+This version of this project is also avaliable as a build, under the release: "Release for Final Scene" release.
+
+
 # Shader Explination: Vertex and Fragment Shadows
 
 ```
