@@ -199,7 +199,7 @@ This sets the textured shading to be within object space, and not screen space, 
 I Finally added a unique skybox to my project as well, which while simple, helps to encapsulate the mood of the project much better.
 
 The final product looks like the following:
-![Screenshot](BasicWaves.png)
+![Screenshot](FinishedScene.png)
 
 This version of this project is also avaliable as a build, under the release: "Release for Final Scene" release.
 
