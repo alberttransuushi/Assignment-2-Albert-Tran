@@ -3,7 +3,7 @@
 
 ![Screenshot](Base.png)
 
-Deffered and Forward rendering: What's the difference and implementation
+#Deffered and Forward rendering: What's the difference and implementation
 
 Within the field of Computer Graphics there are typically two different kinds of rendering pipelines we can use Forward Rendering and Deffered Rendering.
 
@@ -24,4 +24,20 @@ The reason why you may want to use Deffered Rendering over Forward Rendering may
 A Flowchart for both pipelines may look like the following:
 
 ![Screenshot](Flowchart.png)
+
+#Sqaure Waves with Toon Shading
+
+In this part of the assignment we will create sqaure waves and apply toon shading to them:
+
+In order to start with this shader, we first need to create a basic Toon Shading lighting model, which we like this:
+
+![image](https://user-images.githubusercontent.com/98855552/228604597-89acb50a-a66c-448c-b521-1ceda980f9f0.png)
+
+This code essentially splits the different tones of our light across a "Ramp" Texture, which will apply toon shading to the object, for a more in depth explination, essentially what we do here is that we will bind different tones of the shading of our object to a texture, essentially going from one tone to another, this differs from traditional or standard shading, as that blends shades together.
+
+This is then followed by the part of the code which applies the sqaure waves:
+
+![image](https://user-images.githubusercontent.com/98855552/228606123-0ef6ad18-1b9c-4fff-9335-83ece820871b.png)
+
+This code essentially displaces our vertex by taking the sqaure root of the different vertex coordinates and adding them to an offset.
 
