@@ -52,8 +52,8 @@ This portion of the assignment is able to be viewed in my "Release For Base Scen
 
 # First Code Explination: Progressively Upscaling
 
-`
-void OnRenderImage(RenderTexture source, RenderTexture
+
+`void OnRenderImage(RenderTexture source, RenderTexture
 destination){
   int width = source.width / integerRange;
   int height = source.height / integerRange;
@@ -70,7 +70,7 @@ destination){
   for (; i < iterations; i++) {
       width /= 2;
       height /= 2;
-      currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, format);
+      currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, format);`
      
        if (height < 2) {
           break;
@@ -81,7 +81,7 @@ destination){
       currentSource = currentDestination;
   }
 
-  for (; i < iterations; i++) {
+  `for (; i < iterations; i++) {
       Graphics.Blit(currentSource,
       currentDestination);
       // RenderTexture.ReleaseTemporary(currentSource);
@@ -97,7 +97,6 @@ destination){
   }
 
   Graphics.Blit(currentSource, destination);
-}
+}`
 
-`
 
