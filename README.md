@@ -45,5 +45,9 @@ This code essentially displaces our vertex by taking the square root of the diff
 
 (Shown above is the mesh of my plane)
 
+This portion of the assignment is able to be viewed in my "Release For Base Scene" Release. The final scene looks like this:
+
+![Screenshot](SceneBasis.png)
+
 
 
