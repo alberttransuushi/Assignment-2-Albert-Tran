@@ -39,5 +39,11 @@ This is then followed by the part of the code which applies the sqaure waves:
 
 ![image](https://user-images.githubusercontent.com/98855552/228606123-0ef6ad18-1b9c-4fff-9335-83ece820871b.png)
 
-This code essentially displaces our vertex by taking the sqaure root of the different vertex coordinates and adding them to an offset.
+This code essentially displaces our vertex by taking the square root of the different vertex coordinates and adding them to an offset. I also added the `_Time variable`, this variable will move our "waves" across the mesh. One more thing we need to do for square waves is to give our mesh more faces, as a simple plane does not have enough in order to create the sqaure waves we want, since we're doing these waves on a per vertex basis. This also differs from the waves we did in the tutorial by applying them into a surface shader.
+
+![image](https://user-images.githubusercontent.com/98855552/228607732-5ae65976-229b-4a79-a5d3-3e86b6b4ccf6.png)
+
+(Shown above is the mesh of my plane)
+
+
 
