@@ -104,6 +104,83 @@ destination){
 }
 ```
 
+This portion of code is an example of "Progressive Upsampling" and "Progressively Downsampling". Essentially what progressively upsampling and downsampling does is "blur" an object by progressively creating more and more pixels by linerarily interpolating more of them from a pixel in the case of upsampling, in the case of downsampling, it instead takes the four nearest, and turns them into one pixel. This creates a blurring effect. 
+
+How we do this in code through the following:
+
+```
+  int width = source.width / integerRange;
+  int height = source.height / integerRange;
+  RenderTextureFormat format = source.format;
+  RenderTexture[] textures = new RenderTexture[16];
+```
+First we take into account the width and height of our pixels, which we use in order to tell which pixels to downsample and upsample. We then store this in an array of render textures, so we can render out these progressively down and upsampled pixels onto our screen. 
+
+```
+  Graphics.Blit(source, currentDestination);
+  RenderTexture currentSource = currentDestination;
+  Graphics.Blit(currentSource, destination);
+  RenderTexture.ReleaseTemporary(currentSource);
+  int i = 1;
+  for (; i < iterations; i++) {
+      width /= 2;
+      height /= 2;
+      currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, format);
+     
+       if (height < 2) {
+          break;
+       }
+      currentDestination = RenderTexture.GetTemporary(width, height, 0, format);
+      Graphics.Blit(currentSource, currentDestination);
+      RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+  }
+
+
+```
+This first loop essentially Progressively Downsamples our pixels, we can also set how many iterations we want to downsample by, by setting it within the for loop like the following:
+
+ `for (; i < iterations; i++)`
+
+We then divide out width and height by 2 each, to create a 2x2 downsample (essentially taking into account the 4 pixels we'll use to downsample). We also add a small if statement to break our code if the height of our pixels drop belows two, because at that point not much is being added to the downsample.
+```
+      width /= 2;
+      height /= 2;
+      currentDestination = textures[i] = RenderTexture.GetTemporary(width, height, 0, format);
+
+     if (height < 2) {
+          break;
+     }
+```
+This then creates a temporary render texture that has been progressively downsampled, which we will later apply onto the screen using the following block of code:
+```
+      currentDestination = RenderTexture.GetTemporary(width, height, 0, format);
+      Graphics.Blit(currentSource, currentDestination);
+      RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+```
+for upsampling we use the following loops:
+
+```
+ for (; i < iterations; i++) {
+      Graphics.Blit(currentSource, currentDestination);
+      //RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+   }
+  for (i -= 2; i >= 0; i--) {
+      currentDestination = textures[i];
+      textures[i] = null;
+      Graphics.Blit(currentSource, currentDestination);
+      RenderTexture.ReleaseTemporary(currentSource);
+      currentSource = currentDestination;
+  }
+```
+
+The first loop essentially just adds a temporary render texture to be readded to the array, the second loop then starts one step from the lowest level (essentially the downsampled pixel(s) we just created), and then subrtacts 2 from it, going backwards from our downsampled pixels, until there are no more iterations to go through, and it hits zero. We then release our upsampled remder texture that was based off our downsampled one. Which creates the final product. It will result in a slightly blocky looking blur. 
+
+This code has a variety of uses, you can use it to create a pixelated bloom, if that is the effect you want to go for, or for a pixelated loading screen, essentially blurring the screen when you walk into one area, entering a loading screen, and then unblurring the image. 
+
+
 # Second Code Explination: Colored Shadows
 
 ```
