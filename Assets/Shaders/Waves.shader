@@ -92,8 +92,8 @@
 		void surf (Input IN, inout MySurfaceOutput o) {
 			fixed4 c = tex2D (_MainTex, IN.uv_MainTex) * _Color;
 
-			//o.screenUV = IN.screenPos.xy * 4 / IN.screenPos.w;
-			o.screenUV = IN.uv_MainTex * _Repeat;
+			o.screenUV = IN.screenPos.xy * 4 / IN.screenPos.w;
+			//o.screenUV = IN.uv_MainTex * _Repeat;
 			half v = length(tex2D(_MainTex, IN.uv_MainTex).rgb) * _Repeat;
 			o.val = v;
 
